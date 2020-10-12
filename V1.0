@@ -1,0 +1,149 @@
+//2020.10.12上传
+//通过监控R值变化来统计人数，误差较大
+#include <iostream>
+#include<opencv2/core/core.hpp>
+#include<opencv2/highgui/highgui.hpp>
+
+using namespace std;
+using namespace cv;
+
+//截下该视频的每一帧并存放在特定路径,并返回视频的总帧数
+double getFrames(String videoName, String path) {
+	VideoCapture cap;
+	cap.open(videoName);
+	if (!cap.isOpened()) {
+		cout << "视频打开失败！";
+		exit(-1);
+	}
+	double frames = cap.get(CAP_PROP_FRAME_COUNT); //视频的总帧数
+	Mat frame;
+	for (int i = 0; i < frames; i++) {
+		if (!cap.read(frame)) cout << "视频读取失败！";
+		String path = "G:/tof_pictures" + to_string(i + 1) + ".jpg"; //文件的取名得规范，得含有原视频的信息
+		imwrite(path, frame);
+	}
+	cap.release();
+	return frames;
+}
+
+//打开特定路径的图像
+Mat openImage(int x) {
+	String num = to_string(x);
+	String path = "G:/tof_pictures/" + num + ".jpg";
+	Mat image = imread(path);
+	if (!image.data) {
+		cout << "打开图像文件失败！";
+		exit(-1);
+	}
+	return image;
+}
+
+//输出image特定区域的所有像素点的RGB值
+void getRGB(Mat image,int rows,int cols) {
+	for (int row = 0; row < rows; row++) {
+		for (int col = 0; col < cols; col++) {
+			printf("这是第%d行，第%d列的像素点：", row, col);
+			cout << "B:" << (int)image.at<Vec3b>(row, col)[0];
+			cout << "  G:" << (int)image.at<Vec3b>(row, col)[1];
+			cout << "  R:" << (int)image.at<Vec3b>(row, col)[2] << endl;
+		}
+	}
+}
+
+//得到特定区域的所有像素点的R值之和
+double getR_sum(Mat image,int rows,int cols) {
+	double sum = 0;
+	for (int row = 0; row < rows; row++) {
+		for (int col = 0; col < cols ; col++) {
+			sum += (int)image.at<Vec3b>(row, col)[2];
+		}
+	}
+	return sum;
+}
+
+//得到特定区域的所有像素点的G值之和
+double getG_sum(Mat image, int rows, int cols) {
+	double sum = 0;
+	for (int row = 0; row < rows; row++) {
+		for (int col = 0; col < cols; col++) {
+			sum += (int)image.at<Vec3b>(row, col)[1];
+		}
+	}
+	return sum;
+}
+
+//得到特定区域的所有像素点的B值之和
+double getB_sum(Mat image, int rows, int cols) {
+	double sum = 0;
+	for (int row = 0; row < rows; row++) {
+		for (int col = 0; col < cols; col++) {
+			sum += (int)image.at<Vec3b>(row, col)[0];
+		}
+	}
+	return sum;
+}
+
+Mat getRegion(Mat image, int x, int y, int width, int height) {
+	Rect rect(x, y, width, height);
+	return image(rect);
+}
+
+int main(int argc, char* argv[]) {
+
+	//图像是288*288的
+
+	//for (int i = 3624; i <= 3624; i++) {
+	//	Mat image = openImage(i);
+	//	//Mat image1=getRegion(image, 50, 50, 100, 100);
+	//	printf("图像%d.jpg所截区域所有像素点的R值为%lf：\n",i, getR_sum(image, image.rows, image.cols));
+	//	printf("图像%d.jpg所截区域所有像素点的G值为%lf：\n", i, getG_sum(image, image.rows, image.cols));
+	//	printf("图像%d.jpg所截区域所有像素点的B值为%lf：\n\n", i, getB_sum(image, image.rows, image.cols));
+	//}
+
+
+	int people = 0;
+	int start = 1;
+	int end = 7200;
+	for (int i = start; i <= end-2; i++) {
+		double R_sum=getR_sum(openImage(i), openImage(i).rows, openImage(i).cols); //该帧图像(i.jpg)的所有像素点的R值之和
+		if (R_sum > 8000000 && R_sum < 11000000) {
+			//接下来的数帧图像只有一人出现
+			double R_sum1 = getR_sum(openImage(i+1), openImage(i+1).rows, openImage(i+1).cols);
+			double R_sum2 = getR_sum(openImage(i+2), openImage(i+2).rows, openImage(i+2).cols);
+			//double R_sum3 = getR_sum(openImage(i+3), openImage(i+3).rows, openImage(i+3).cols);
+			//double R_sum4 = getR_sum(openImage(i+4), openImage(i+4).rows, openImage(i+4).cols);
+			//如果从i.jpg到i+2.jpg连着三帧图像R值之和都属于(800w,1200w)就认定有一个人经过
+			//原来是觉得连着五帧好一点，但是有可能出现一个人刚进来，马上就有另一个人进来的情况
+			//这时候后面的帧的R值之和可能大于1100w
+			//原本我认为一个人的时候R值之和属于(800w,1100w)，但这不是原视频，有红框的
+			if ((R_sum1 > 8000000 && R_sum1 < 12000000) &&
+				(R_sum2 > 8000000 && R_sum2 < 12000000)) {
+				people++;
+				printf("%d.jpg有人出现,此时的人数为：%d\n", i, people);
+			}
+			//人数加一之后，需要回到无人状态的帧，等待下一次计数
+			//在这个过程中，有可能出现画面同时存在两个人的情况
+			while (i <= end - 2) {
+				int RSum = getR_sum(openImage(i), openImage(i).rows, openImage(i).cols);
+				if (RSum > 7600000 && RSum < 8000000) break; //已经回到了无人状态的帧
+				else if (RSum > 11000000 && RSum < 12000000) {
+					//画面出现了两个人，需要回到只有一个人存在时的帧
+					people++;
+					printf("%d.jpg有人出现,此时的人数为：%d\n", i, people);
+					while (i <= end - 2) {
+						int RSum1 = getR_sum(openImage(i), openImage(i).rows, openImage(i).cols);
+						if (RSum1 > 8000000 && RSum1 < 10000000) break; //已经回到了一人状态的帧
+						i++;
+					}
+				}
+				if (i <= end - 2) i++;
+				else break;
+			}
+		}
+		//printf("到%d.jpg，people=%d\n", i, people);
+	}
+	printf("从%d.jpg到%d.jpg，共出现了%d个人\n", start, end, people);
+	return 1;
+}
+
+
