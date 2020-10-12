@@ -1,5 +1,7 @@
 //2020.10.12上传
-//通过监控R值变化来统计人数，误差较大
+//由于最初无法获得像素点的深度值，故使用颜色间接估计深度值
+//通过监控R值变化来统计人数，复杂情况下误差较大
+//还没有做方向判断
 #include <iostream>
 #include<opencv2/core/core.hpp>
 #include<opencv2/highgui/highgui.hpp>
