@@ -85,6 +85,7 @@ double getB_sum(Mat image, int rows, int cols) {
 	return sum;
 }
 
+//返回特定区域的mat矩阵
 Mat getRegion(Mat image, int x, int y, int width, int height) {
 	Rect rect(x, y, width, height);
 	return image(rect);
