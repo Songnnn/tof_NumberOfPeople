@@ -10,9 +10,9 @@ using namespace std;
 using namespace cv;
 
 //截下该视频的每一帧并存放在特定路径,并返回视频的总帧数
-double getFrames(String videoName, String path) {
+double getFrames(String videoPath) {
 	VideoCapture cap;
-	cap.open(videoName);
+	cap.open(videoPath);
 	if (!cap.isOpened()) {
 		cout << "视频打开失败！";
 		exit(-1);
