@@ -9,7 +9,7 @@ using namespace cv;
 //得到一帧每个像素点的深度值并返回深度值之和
 int getDepth(int* depth, int x) {
 	//得到帧的完整路径
-	char path1[50] = "F:\\TOF_NumberOfPeople\\\\Frame2\\frame";
+	char path1[50] = "F:\\TOF_NumberOfPeople\\Frame2\\frame";
 	char path2[50];
 
 	_itoa_s(x, path2, 10);
