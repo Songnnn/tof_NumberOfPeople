@@ -5,25 +5,11 @@ using namespace std;
 
 int main()
 {
-    //Frame2.mp4是Frame2的第1帧到500帧转成的视频
-    //getFrames("F:\\TOF_NumberOfPeople\\Frame2.mp4");
-    
-    //得到第1到500帧，每一帧所有像素点的深度值之和
-    /*
-    for (int i = 1; i <= 500; i++) {
-        int depth[320 * 240] = { 0 };
-        printf("第 %d 帧的深度值之和为：%d\n\n", i, getDepth(depth,i));
-    }
-    */
-    /*
-    string videoPath = "";
-    int videoWidth = 0, videoHight = 0;
-    getVideoSize(videoWidth, videoHight, videoPath);
-    */
-
+    getNumberOfPeople(oneThreshold, 1, startFrame);
+    return 1;
 
     /*
-    * 非递归版本，比较繁琐，虽然加了很多注释，但可读性还是比较差，还是递归版本简略一些
+    * 早期非递归版本，比较繁琐，虽然加了很多注释，但可读性还是比较差，还是递归版本简略一些
     int people = 0;
     int startFrame = 1, endFrame = 500;
     int commonDepth; //略小于无人情况下的深度值
@@ -61,8 +47,5 @@ int main()
         }
     }
     */
-    
-    getNumberOfPeople(oneThreshold, 1, startFrame);
-    return 1;
 }
 
