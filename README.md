@@ -20,10 +20,10 @@ tof视频，统计人数及进出方向
 ##### fileRead.h中的全局变量
 `int depth[320*240]={0}`&emsp;&emsp;320\*240是视频帧的像素点个数，即videoWidth\*videoHight<br>
 `videoPath`&emsp;&emsp;深度数据转出的伪彩视频所在地址<br>
-`framesFilePath`伪彩视频帧所在地址<br>
-`depthDatasPath`深度数据所在地址<br>
-`videoWidth`像素点矩阵的宽<br>
-`videoHight`像素点的高
+`framesFilePath`&emsp;&emsp;伪彩视频帧所在地址<br>
+`depthDatasPath`&emsp;&emsp;深度数据所在地址<br>
+`videoWidth`&emsp;&emsp;像素点矩阵的宽<br>
+`videoHight`&emsp;&emsp;像素点的高
 ##### getNumbers.h中的全局变量
 `people`
 
