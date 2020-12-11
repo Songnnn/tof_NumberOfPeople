@@ -18,9 +18,9 @@ tof视频，统计人数及进出方向
 #### 全局变量介绍
 代码中共含17个全局变量，fileRead.h中有6个，getNumbers.h中有11个
 ##### fileRead.h中的全局变量
-`int depth[320*240]={0}` 320\*240是视频帧的像素点个数，即videoWidth\*videoHight
-`videoPath` 深度数据转出的伪彩视频所在地址
-`framesFilePath` 伪彩视频帧所在地址
+`int depth[320*240]={0}` 320\*240是视频帧的像素点个数，即videoWidth\*videoHight<br>
+`videoPath` 深度数据转出的伪彩视频所在地址<br>
+`framesFilePath` 伪彩视频帧所在地址<br>
 `depthDatasPath` 深度数据所在地址
 `videoWidth` 像素点矩阵的宽
 `videoHight` 像素点的高
