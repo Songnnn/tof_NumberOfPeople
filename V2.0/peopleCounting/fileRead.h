@@ -24,7 +24,7 @@ double getFrames(String videoPath) {
 	Mat frame;
 	for (int i = 0; i < frames; i++) {
 		if (!cap.read(frame)) cout << "视频读取失败！";
-		String path = framesFilePath + to_string(i + 1) + ".jpg"; //文件的取名得规范，得含有原视频的信息
+		String path = framesFilePath + "\\" + to_string(i + 1) + ".jpg"; //文件的取名得规范，得含有原视频的信息
 		imwrite(path, frame);
 	}
 	cap.release();
