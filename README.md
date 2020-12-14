@@ -23,7 +23,7 @@ tof视频，统计人数及进出方向
 `framesFilePath`&emsp;&emsp;伪彩视频帧所在地址<br>
 `depthDatasPath`&emsp;&emsp;深度数据所在地址<br>
 `videoWidth`&emsp;&emsp;像素点矩阵的宽<br>
-`videoHight`&emsp;&emsp;像素点的高
+`videoHight`&emsp;&emsp;像素点矩阵的高
 ##### getNumbers.h中的全局变量
 `people`&emsp;&emsp;出现的总人数<br>
 `entrance`&emsp;&emsp;从入口区域进入的人数<br>
